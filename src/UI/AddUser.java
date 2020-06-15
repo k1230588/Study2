@@ -6,11 +6,14 @@
 package UI;
 
 import Util.DBConn;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import object.UserInfo;
 
@@ -84,6 +87,8 @@ public class AddUser extends javax.swing.JFrame {
         Register2 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
+        warningM = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -100,7 +105,15 @@ public class AddUser extends javax.swing.JFrame {
             new String [] {
                 "ID", "Name", "Password"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
@@ -156,6 +169,11 @@ public class AddUser extends javax.swing.JFrame {
         });
 
         Register2.setText("登録変更");
+        Register2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Register2ActionPerformed(evt);
+            }
+        });
 
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,45 +183,19 @@ public class AddUser extends javax.swing.JFrame {
 
         jLabel6.setText("あいまい検索");
 
+        warningM.setForeground(new java.awt.Color(255, 0, 0));
+
+        jButton1.setText("変更");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(60, 60, 60)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(52, 52, 52)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField3)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(jCheckBox1))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(Register1)
-                        .addGap(58, 58, 58)
-                        .addComponent(Reset1)))
-                .addGap(75, 75, 75)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(80, 80, 80)
                 .addComponent(Search1)
@@ -216,13 +208,51 @@ public class AddUser extends javax.swing.JFrame {
                 .addGap(55, 55, 55)
                 .addComponent(Refresh1)
                 .addGap(100, 100, 100))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(60, 60, 60)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(52, 52, 52)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField3)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(Register1)
+                            .addComponent(jLabel6))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jCheckBox1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(37, 37, 37)
+                                .addComponent(jButton1)
+                                .addGap(30, 30, 30)
+                                .addComponent(Reset1)))))
+                .addGap(75, 75, 75)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(warningM, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -235,11 +265,12 @@ public class AddUser extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(25, 25, 25)
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Reset1)
-                            .addComponent(Register1))
-                        .addGap(35, 35, 35)
+                            .addComponent(Register1)
+                            .addComponent(jButton1))
+                        .addGap(50, 50, 50)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -250,17 +281,20 @@ public class AddUser extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
-                            .addComponent(jCheckBox1))))
-                .addGap(28, 28, 28)
+                            .addComponent(jCheckBox1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(warningM, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Refresh1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(Delete1)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Search1)
-                            .addComponent(Reset2)))
+                        .addComponent(Search1)
+                        .addComponent(Reset2))
+                    .addComponent(Delete1)
                     .addComponent(Register2))
-                .addGap(34, 34, 34))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -284,6 +318,7 @@ public class AddUser extends javax.swing.JFrame {
             Logger.getLogger(AddUser.class.getName()).log(Level.SEVERE, null, ex);
         }
         UList();
+        clearWarningM();
 
     }//GEN-LAST:event_Register1ActionPerformed
 
@@ -292,18 +327,20 @@ public class AddUser extends javax.swing.JFrame {
         jTextField1.setText(null);
         jTextField2.setText(null);
         jPasswordField1.setText(null);
+        clearWarningM();
     }//GEN-LAST:event_Reset1ActionPerformed
 
     private void Refresh1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Refresh1ActionPerformed
         // TODO add your handling code here:
         UList();
+        clearWarningM();
     }//GEN-LAST:event_Refresh1ActionPerformed
 
     private void Reset2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Reset2ActionPerformed
         // TODO add your handling code here:
         jTextField3.setText(null);
         jTextField4.setText(null);
-
+        clearWarningM();
     }//GEN-LAST:event_Reset2ActionPerformed
 
     private void Search1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Search1ActionPerformed
@@ -347,7 +384,7 @@ public class AddUser extends javax.swing.JFrame {
                 model.addRow(new Object[]{list.get(i).getUserId(), list.get(i).getName(), list.get(i).getPassword()});
             }
         }
-
+        clearWarningM();
 
     }//GEN-LAST:event_Search1ActionPerformed
 
@@ -357,16 +394,85 @@ public class AddUser extends javax.swing.JFrame {
 
     private void Delete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Delete1ActionPerformed
         // TODO add your handling code here:\
-        int i=jTable1.getSelectedRow();
+        int i = jTable1.getSelectedRow();
+        DBConn dbc = new DBConn();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int DeleteL;
+
+        if (i != -1) {
+            DeleteL = (int) model.getValueAt(i, 0);
+            try {
+                dbc.getDBC();
+                dbc.DUserInfo(DeleteL);
+                dbc.closeDBC();
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(AddUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            model.removeRow(i);
+            clearWarningM();
+
+        } else {
+            warningM.setText("No row selected.");
+
+        }
+    }//GEN-LAST:event_Delete1ActionPerformed
+
+    private void Register2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Register2ActionPerformed
+        // TODO add your handling code here:
+        int i = jTable1.getSelectedRow();
         DBConn dbc = new DBConn();
         UserInfo ui = new UserInfo();
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        
-        if(i!=-1){
-//            String DeleteL=(String) model.getValueAt(i,0);
-            System.out.println(i);
+        if (i != -1) {
+            ui.setUserId((int) model.getValueAt(i, 0));
+            ui.setName((String) model.getValueAt(i, 1));
+            ui.setPassword((String) model.getValueAt(i, 2));
+            jTextField1.setText(String.valueOf(ui.getUserId()));
+            jTextField2.setText(ui.getName());
+            jPasswordField1.setText(ui.getPassword());
+            clearWarningM();
+        } else {
+            warningM.setText("No row selected.");
         }
-    }//GEN-LAST:event_Delete1ActionPerformed
+
+
+    }//GEN-LAST:event_Register2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int i = jTable1.getSelectedRow();
+        String j = jTextField1.getText();
+        DBConn dbc = new DBConn();
+        UserInfo ui = new UserInfo();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        if (i == -1) {
+            warningM.setText("Please select the row you want to change");
+        } else if (j.equals("")){
+            warningM.setText("ID cannot be blank.");
+        } else {
+            int Oid = (int) model.getValueAt(i, 0);
+            ui.setUserId(Integer.parseInt(jTextField1.getText()));
+            ui.setName(jTextField2.getText());
+            ui.setPassword(jPasswordField1.getText());
+            try {
+                dbc.getDBC();
+                dbc.UpUserInfo(Oid,ui);
+                dbc.closeDBC();
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(AddUser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            model.setValueAt(ui.getUserId(), i, 0);
+            model.setValueAt(ui.getName(), i, 1);
+            model.setValueAt(ui.getPassword(), i, 2);
+            clearWarningM();
+
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void clearWarningM() {
+        warningM.setText(null);
+    }
 
     /**
      * @param args the command line arguments
@@ -411,6 +517,7 @@ public class AddUser extends javax.swing.JFrame {
     private javax.swing.JButton Reset1;
     private javax.swing.JButton Reset2;
     private javax.swing.JButton Search1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -425,5 +532,6 @@ public class AddUser extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel warningM;
     // End of variables declaration//GEN-END:variables
 }

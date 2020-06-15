@@ -58,14 +58,24 @@ public class DBConn {
         sql += "'" + ui.getPassword() + "',";
         sql += "current_timestamp);";
 
-        System.out.println(sql);
+//        System.out.println(sql);
         stmt.executeUpdate(sql);
         conn.commit();
 
     }
-    
-    public void DUserInfo(UserInfo ui) throws SQLException {
-        
+
+    public void DUserInfo(int DeleteL) throws SQLException {
+        String sql = "delete from userinfo where userid = " + DeleteL + ";";
+        stmt.executeUpdate(sql);
+        conn.commit();
+    }
+
+    public void UpUserInfo(int Oid, UserInfo ui) throws SQLException {
+        String sql = "update userinfo set userid = " + ui.getUserId() + ", name = '" + ui.getName() + "',";
+        sql += " password = '" + ui.getPassword() + "' where userid = " + Oid + ";";
+//        System.out.println(sql);
+        stmt.executeUpdate(sql);
+        conn.commit();
     }
 
     public List<UserInfo> userAll() throws SQLException {
@@ -106,7 +116,7 @@ public class DBConn {
             case "11":
                 if (SIO == 1) {
                     //あいまい検索
-                    sql = "select * from userinfo where cast(userid as varchar(255)) like '%" + ui.getUserId() +"%' AND name like '%" + ui.getName() + "%';";
+                    sql = "select * from userinfo where cast(userid as varchar(255)) like '%" + ui.getUserId() + "%' AND name like '%" + ui.getName() + "%';";
                 } else {
                     sql = "select * from userinfo where userid = " + ui.getUserId() + " AND name = '" + ui.getName() + "'";
                 }
@@ -114,7 +124,7 @@ public class DBConn {
             case "10":
                 if (SIO == 1) {
                     //あいまい検索
-                    sql = "select * from userinfo where cast(userid as varchar(255)) like '%" + ui.getUserId() +"%';";
+                    sql = "select * from userinfo where cast(userid as varchar(255)) like '%" + ui.getUserId() + "%';";
                 } else {
                     sql = "select * from userinfo where userid = " + ui.getUserId();
                 }
@@ -131,7 +141,6 @@ public class DBConn {
                 sql = "select * from userinfo";
         }
 
-
         System.out.println(sql);
         rset = stmt.executeQuery(sql);
         if (rset != null) {
@@ -145,5 +154,5 @@ public class DBConn {
         }
         return list;
     }
-        
+
 }
